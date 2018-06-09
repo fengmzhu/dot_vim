@@ -1,0 +1,42 @@
+[submodule "pack/feng/start/undotree"]
+	path = pack/feng/start/undotree
+	url = https://github.com/mbbill/undotree.git
+[submodule "pack/feng/start/vim-easy-align"]
+	path = pack/feng/start/vim-easy-align
+	url = https://github.com/junegunn/vim-easy-align.git
+[submodule "pack/feng/start/vimwiki"]
+	path = pack/feng/start/vimwiki
+	url = https://github.com/vimwiki/vimwiki.git
+[submodule "pack/feng/start/nerdtree"]
+	path = pack/feng/start/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+[submodule "pack/feng/start/mru"]
+	path = pack/feng/start/mru
+	url = https://github.com/vim-scripts/mru.vim.git
+[submodule "pack/feng/start/vim-airline"]
+	path = pack/feng/start/vim-airline
+	url = https://github.com/vim-airline/vim-airline.git
+[submodule "pack/feng/start/vim-airline-themes"]
+	path = pack/feng/start/vim-airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes.git
+[submodule "pack/feng/opt/command-t"]
+	path = pack/feng/opt/command-t
+	url = https://github.com/wincent/command-t.git
+[submodule "pack/feng/opt/YouCompleteMe"]
+	path = pack/feng/opt/YouCompleteMe
+	url = https://github.com/Valloric/YouCompleteMe.git
+[submodule "pack/feng/start/tagbar"]
+	path = pack/feng/start/tagbar
+	url = https://github.com/majutsushi/tagbar.git
+[submodule "pack/feng/start/syntastic"]
+	path = pack/feng/start/syntastic
+	url = https://github.com/vim-syntastic/syntastic.git
+[submodule "pack/feng/start/vim-matchup"]
+	path = pack/feng/start/vim-matchup
+	url = https://github.com/andymass/vim-matchup.git
+[submodule "pack/feng/start/ultisnips"]
+	path = pack/feng/start/ultisnips
+	url = https://github.com/SirVer/ultisnips.git
+[submodule "pack/feng/start/vim-snippets"]
+	path = pack/feng/start/vim-snippets
+	url = https://github.com/honza/vim-snippets.git
