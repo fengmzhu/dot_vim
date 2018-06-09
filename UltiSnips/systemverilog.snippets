@@ -1,0 +1,793 @@
+# ~/.vim/UltiSnips/systemverilog.snippets
+extends verilog
+
+snippet clocking "clocking"
+clocking ${1:module_name} @(${2:posedge} ${3:clk});
+	$4
+endclocking : $1
+endsnippet
+snippet intf "interface instantiate"
+interface ${1:module_name}(input bit ${2:clk});
+	${3:logic a};
+	${4:modport mon (input a)};
+endinterface : $1
+endsnippet
+
+snippet class "class"
+class ${1:class_name};
+	$2;
+endclass: $1
+endsnippet
+
+snippet task "task"
+task ${1:task_name}($2);
+\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	$3
+endtask : $1
+endsnippet
+snippet vfunc "virtual function"
+virtual function ${1:void} ${2:func_name}();
+	${3:${VISUAL}}
+endfunction : $2
+endsnippet
+
+snippet enum "enum"
+enum {${1:READ}, ${2:WRITE}} ${3:trans};
+endsnippet
+
+snippet assert "assert"
+assert(${1:txn.randomize()});
+endsnippet
+snippet typedefs "typedef sequencer"
+typedef uvm_sequencer #($1_data) $1_sequencer;
+endsnippet
+
+#UVM example codes
+snippet package "package"
+package ${1:router_test_pkg};
+import uvm_pkg::*;
+//import router_stimulus_pkg::*;
+//import router_env_pkg::*;
+
+\`include "${2:test_collection.sv}"
+endpackage: $1
+endsnippet
+
+snippet test.sv "test.sv example"
+program automatic test;
+import uvm_pkg::*;
+import router_test_pkg::*;
+
+initial begin
+	//uvm_resource_db#(virtual router_io)::set("router_vif", "", router_test_top.router_if);
+
+	$timeformat(-9, 1, "ns", 10);
+
+	//uvm_reg::include_coverage("*", UVM_CVR_ALL);
+
+	run_test();
+end
+
+endprogram
+endsnippet
+
+#UVM key template
+#class
+snippet uvm_comp "uvm component example"
+class ${1:class_name} extends ${2:uvm_env};
+\`uvm_component_utils($1)
+
+function new(string name, uvm_component parent);
+	super.new(name.parent);
+endfunction: new
+
+function void build_phase(uvm_phase phase);
+	super.build_phase(phase);
+	//assert( uvm_config_db #(virtual dut_if)::get(this, "", "dut_vi", dut_vi) );
+	$0
+endfunction : build_phase
+
+function run_phase(uvm_phase phase);
+endtask: run_phase
+endclass: $1
+endsnippet
+snippet uvm_seq_item "uvm sequence item example"
+class ${1:packet} extends uvm_sequence_item;
+rand bit [3:0] ${2:sa}, ${3:da};
+rand bit[7:0] ${4:payload}[$];
+$0
+
+\`uvm_object_utils_begin($1)
+	\`uvm_field_int($2, UVM_ALL_ON | UVM_NOCOMPARE)
+	\`uvm_field_int($3, UVM_ALL_ON)
+	\`uvm_field_queue_int($4, UVM_ALL_ON)
+\`uvm_object_utils_end
+
+constraint valid {
+	$4.size inside {[1:10]};
+}
+
+function new(string name = "$1");
+	super.new(name);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+
+endclass: $1
+endsnippet
+snippet uvm_agent "uvm agent example"
+typedef class $1_driver;
+typedef class $1_monitor;
+
+class ${1:host}_agent extends uvm_agent;
+typedef uvm_sequencer #($1_data) $1_sequencer;
+
+uvm_analysis_port #($1_data) analysis_port;
+virtual $1_io vif;
+$1_sequencer  sqr;
+$1_driver     drv;
+$1_monitor    mon;
+
+\`uvm_component_utils($1_agent)
+
+function new(string name, uvm_component parent);
+	super.new(name, parent);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+
+virtual function void build_phase(uvm_phase phase);
+	super.build_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	uvm_config_db#(virtual $1_io)::get(this, "", "vif", vif);
+	uvm_config_db#(virtual $1_io)::set(this, "*", "vif", vif);
+
+	if (is_active == UVM_ACTIVE) begin
+		sqr = $1_sequencer::type_id::create("sqr", this);
+		drv  = $1_driver::type_id::create("drv", this);
+	end
+	mon = $1_monitor::type_id::create("mon", this);
+	analysis_port = new("analysis_port", this);
+endfunction: build_phase
+
+virtual function void connect_phase(uvm_phase phase);
+	super.connect_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	if (is_active == UVM_ACTIVE) begin
+		drv.seq_item_port.connect(sqr.seq_item_export);
+	end
+		mon.analysis_port.connect(this.analysis_port);
+endfunction: connect_phase
+
+virtual function void end_of_elaboration_phase(uvm_phase phase);
+	super.end_of_elaboration_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	if (vif == null) begin
+		\`uvm_fatal("CFGERR", "Interface for $1 agent not set");
+	end
+endfunction: end_of_elaboration_phase
+endclass: $1_agent
+
+
+class $1_driver extends uvm_driver #($1_data);
+\`uvm_component_utils($1_driver)
+
+virtual $1_io vif;
+
+function new(string name, uvm_component parent);
+	super.new(name, parent);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+
+virtual function void build_phase(uvm_phase phase);
+	super.build_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	uvm_config_db#(virtual $1_io)::get(this, "", "vif", vif);
+endfunction: build_phase
+
+virtual function void end_of_elaboration_phase(uvm_phase phase);
+	super.end_of_elaboration_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	if (vif == null) begin
+		\`uvm_fatal("CFGERR", "Interface for $1 driver not set");
+	end
+endfunction: end_of_elaboration_phase
+
+virtual task run_phase(uvm_phase phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	forever begin
+		seq_item_port.get_next_item(req);
+		\`uvm_info("RUN", { "Before process\n", req.sprint() }, UVM_FULL);
+		data_rw(req);
+		rsp = $1_data::type_id::create("rsp", this);
+		rsp.set_id_info(req);
+		\`uvm_info("RUN", { "After process\n", req.sprint() }, UVM_FULL);
+		seq_item_port.item_done();
+	end
+endtask: run_phase
+
+virtual task data_rw($1_data req);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	$0 //TODO: implement driver code
+	//drive_serial<tab>
+endtask: data_rw
+endclass: $1_driver
+
+
+class $1_monitor extends uvm_monitor;
+uvm_analysis_port #($1_data) analysis_port;
+virtual $1_io vif;
+$1_data tr;
+
+\`uvm_component_utils($1_monitor)
+
+function new(string name, uvm_component parent);
+	super.new(name, parent);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+
+virtual function void build_phase(uvm_phase phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	uvm_config_db#(virtual $1_io)::get(this, "", "vif", vif);
+	analysis_port = new("analysis_port", this);
+endfunction: build_phase
+
+virtual function void end_of_elaboration_phase(uvm_phase phase);
+	super.end_of_elaboration_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	if (vif == null) begin
+		\`uvm_fatal("CFGERR", "Interface for $1 monitor not set");
+	end
+endfunction: end_of_elaboration_phase
+
+virtual task run_phase(uvm_phase phase);
+\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+forever begin
+	tr = $1_data::type_id::create("tr", this);
+	data_detect(tr);
+	\`uvm_info("HOST_MON", {"\n", tr.sprint()}, UVM_HIGH);
+	analysis_port.write(tr);
+end
+endtask: run_phase
+
+virtual task data_detect($1_data tr);
+\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+fork
+	begin
+		fork
+			wr_detect();
+			rd_detect();
+		join_any
+		disable fork;
+	end
+join
+endtask: data_detect
+
+virtual task wr_detect(); //TODO: modify for seqeunce item
+	@(vif.mon);
+	wait(vif.mon.wr_n == 0);
+	tr.addr = vif.mon.address;
+	tr.data = vif.mon.data;
+	tr.kind = UVM_WRITE;
+	\`uvm_info("GOT_WRITE", {"\n", tr.sprint()}, UVM_FULL);
+endtask: wr_detect
+
+virtual task rd_detect(); //TODO: modify for seqeunce item
+	@(vif.mon);
+	wait(vif.mon.rd_n == 0);
+	tr.addr = vif.mon.address;
+	tr.data = vif.mon.data;
+	tr.kind = UVM_READ;
+	\`uvm_info("GOT_READ", {"\n", tr.sprint()}, UVM_FULL);
+endtask: rd_detect
+endclass: $1_monitor
+endsnippet
+snippet uvm_env "uvm env example"
+class ${1:router}_env extends uvm_env;
+\`uvm_component_utils($1_env)
+
+${2:reset}_agent   ${3:r_agt};
+${4:input}_agent   ${5:i_agt};
+${6:output}_agent  ${7:o_agt};
+
+//SB_begin
+scoreboard    sb;
+//SB_end
+
+//RAL_begin
+host_agent  h_agt;
+ral_block_host_regmodel regmodel;
+reg_adapter adapter;
+
+typedef uvm_reg_predictor #(host_data) hreg_predictor;
+hreg_predictor hreg_predict;
+//RAL_end
+
+function new(string name, uvm_component parent);
+	super.new(name, parent);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+
+virtual function void build_phase(uvm_phase phase);
+	super.build_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	$3 = reset_agent::type_id::create("$3", this);
+	uvm_config_db #(uvm_object_wrapper)::set(this, "$3.sqr.reset_phase", "default_sequence", reset_sequence::get_type());
+
+	$5 = $4_agent::type_id::create("$5", i), this);
+	uvm_config_db #(int)::set(this, $5.get_name(), "port_id", i);
+	uvm_config_db #(uvm_object_wrapper)::set(this, {$5.get_name(), ".", "sqr.reset_phase"}, "default_sequence", $1_input_port_reset_sequence::get_type());
+	uvm_config_db #(uvm_object_wrapper)::set(this, {$5.get_name(), ".", "sqr.main_phase"}, "default_sequence", packet_sequence::get_type());
+
+	//SB_begin
+	sb = scoreboard::type_id::create("sb", this);
+	//SB_end
+
+	$7 = $6_agent::type_id::create("$7", i), this);
+	uvm_config_db #(int)::set(this, $7.get_name(), "port_id", i);
+
+	//RAL_begin
+	h_agt = host_agent::type_id::create("h_agt", this);
+	adapter = reg_adapter::type_id::create("adapter", this);
+
+	uvm_config_db #(ral_block_host_regmodel)::get(this, "", "regmodel", regmodel);
+
+	if (regmodel == null) begin
+		string hdl_path;
+		\`uvm_info("HOST_CFG", "Self constructing regmodel", UVM_MEDIUM);
+		if (!uvm_config_db #(string)::get(this, "", "hdl_path", hdl_path)) begin
+			\`uvm_warning("HOST_CFG", "HDL path for DPI backdoor not set!");
+		end
+		regmodel = ral_block_host_regmodel::type_id::create("regmodel", this);
+		regmodel.build();
+		regmodel.lock_model();
+		regmodel.set_hdl_path_root(hdl_path);
+	end
+
+	uvm_config_db #(ral_block_host_regmodel)::set(this, h_agt.get_name(), "regmodel", regmodel);
+	uvm_config_db #(uvm_object_wrapper)::set(this, {h_agt.get_name(), ".", "sqr.configure_phase"}, "default_sequence", ral_port_unlock_sequence::get_type());
+
+	hreg_predict = hreg_predictor::type_id::create("h_reg_predict", this);
+	//RAL_end
+
+
+endfunction: build_phase
+
+virtual function void connect_phase(uvm_phase phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	//SB_begin
+	$5.analysis_port.connect(sb.before_export);
+	$7.analysis_port.connect(sb.after_export);
+	//SB_end
+
+	//RAL_begin
+	regmodel.default_map.set_sequencer(h_agt.sqr, adapter);
+	regmodel.default_map.set_auto_predict(0);
+	hreg_predict.map = regmodel.get_default_map();
+	hreg_predict.adapter = adapter;
+	h_agt.analysis_port.connect(hreg_predict.bus_in);
+	//RAL_end
+endfunction: connect_phase
+
+endclass: $1_env
+endsnippet
+snippet uvm_driver "uvm_driver example"
+class ${1:driver} extends uvm_driver #(${2:packet});
+virtual ${3:router_io} vif; // DUT virtual interface
+int     ${4:port_id} = -1;  // Driver's designated port
+
+\`uvm_component_utils_begin($1)
+	\`uvm_field_int($4, UVM_ALL_ON | UVM_DEC)
+\`uvm_component_utils_end
+
+function new(string name, uvm_component parent);
+	super.new(name, parent);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+
+virtual function void build_phase(uvm_phase phase);
+	super.build_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	uvm_config_db#(int)::get(this, "", "$4", $4);
+	uvm_config_db#(virtual $3)::get(this, "", "vif", vif);
+endfunction: build_phase
+
+virtual function void end_of_elaboration_phase(uvm_phase phase);
+	super.end_of_elaboration_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	if (!($4 inside {-1, [0:15]})) begin
+	\`uvm_fatal("CFGERR", $sformatf("$4 must be {-1, [0:15]}, not %0d!", $4));
+	end
+	if (vif == null) begin
+	\`uvm_fatal("CFGERR", "Interface for Driver not set");
+	end
+endfunction: end_of_elaboration_phase
+
+virtual function void start_of_simulation_phase(uvm_phase phase);
+	super.start_of_simulation_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	\`uvm_info("DRV_CFG", $sformatf("$4 is: %0d", $4), UVM_MEDIUM);
+endfunction: start_of_simulation_phase
+
+virtual task run_phase(uvm_phase phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	forever begin
+		seq_item_port.get_next_item(req);
+
+		if ($4 inside { -1, req.sa }) begin
+			send(req);
+			\`uvm_info("DRV_RUN", {"\n", req.sprint()}, UVM_MEDIUM);
+		end
+
+		seq_item_port.item_done();
+	end
+endtask: run_phase
+
+virtual task send($2 tr);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	send_address(tr);
+	send_pad(tr);
+	send_payload(tr);
+endtask: send
+
+virtual task send_address($2 tr);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	vif.drvClk.frame_n[tr.sa] <= 1'b0;
+	for(int i=0; i<4; i++) begin
+	vif.drvClk.din[tr.sa] <= tr.da[i];
+	@(vif.drvClk);
+end
+endtask: send_address
+
+virtual task send_pad($2 tr);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	vif.drvClk.din[tr.sa] <= 1'b1;
+	vif.drvClk.valid_n[tr.sa] <= 1'b1;
+	repeat(5) @(vif.drvClk);
+endtask: send_pad
+
+virtual task send_payload($2 tr);
+	logic [7:0] datum;
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	while(!vif.drvClk.busy_n[tr.sa]) @(vif.drvClk);
+	foreach(tr.payload[index]) begin
+		datum = tr.payload[index];
+		for(int i=0; i<$size(tr.payload, 2); i++) begin
+		vif.drvClk.din[tr.sa] <= datum[i];
+		vif.drvClk.valid_n[tr.sa] <= 1'b0;
+		vif.drvClk.frame_n[tr.sa] <= ((tr.payload.size()-1) == index) && (i==7);
+		@(vif.drvClk);
+		end
+	end
+	vif.drvClk.valid_n[tr.sa] <= 1'b1;
+endtask: send_payload
+
+endclass: $1
+endsnippet
+snippet uvm_mon_o "output monitor example"
+class ${1:oMonitor} extends uvm_monitor;
+int ${2:port_id} = -1;
+virtual ${3:router_io} vif;
+uvm_analysis_port #(packet) analysis_port;
+
+\`uvm_component_utils_begin($1)
+	\`uvm_field_int($2, UVM_DEFAULT | UVM_DEC)
+\`uvm_component_utils_end
+
+function new(string name, uvm_component parent);
+	super.new(name, parent);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+
+virtual function void build_phase(uvm_phase phase);
+	super.build_phase(phase);
+	uvm_config_db#(int)::get(this, "", "$2", $2);
+	uvm_config_db#(virtual $3)::get(this, "", "vif", vif);
+	analysis_port = new("analysis_port", this);
+endfunction: build_phase
+
+virtual function void end_of_elaboration_phase(uvm_phase phase);
+	super.end_of_elaboration_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	if (!($2 inside {-1, [0:15]})) begin
+		\`uvm_fatal("CFGERR", $sformatf("$2 must be {-1, [0:15]}, not %0d!", $2));
+	end
+	if (vif == null) begin
+		\`uvm_fatal("CFGERR", "Interface for $1 not set");
+	end
+endfunction: end_of_elaboration_phase
+
+virtual task run_phase(uvm_phase phase);
+	packet tr;
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	forever begin
+		tr = packet::type_id::create("tr", this);
+		tr.da = this.$2;
+		this.get_packet(tr);
+		\`uvm_info("Got_Output_Packet", {"\n", tr.sprint()}, UVM_MEDIUM);
+		analysis_port.write(tr);
+	end
+endtask: run_phase
+
+virtual task get_packet(packet tr);
+	logic [7:0] datum;
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	wait (vif.oMonClk.frameo_n[$2] !==0);
+	@(vif.oMonClk iff (vif.oMonClk.frameo_n[$2] === 0));
+
+	forever begin
+		for(int i=0; i<8; i=i) begin
+			if (!vif.oMonClk.valido_n[$2]) begin
+				datum[i++] = vif.oMonClk.dout[$2];
+				if (i == 8) begin
+					tr.payload.push_back(datum);
+				end
+				if (vif.oMonClk.frameo_n[$2]) begin
+					if (i == 8) begin
+						return;
+					end else begin
+						\`uvm_fatal("Payload_Error", "Not byte aligned");
+					end
+				end
+			end
+			@(vif.oMonClk);
+		end
+	end
+endtask: get_packet
+
+endclass: $1
+endsnippet
+snippet uvm_mon_i "input monitor example"
+class ${1:iMonitor} extends uvm_monitor;
+virtual ${2:router_io} vif;
+int     ${3:port_id} = -1;
+uvm_analysis_port #(${4:packet}) ${5:analysis_port};
+
+\`uvm_component_utils_begin($1)
+	\`uvm_field_int($3, UVM_DEFAULT | UVM_DEC)
+\`uvm_component_utils_end
+
+function new(string name, uvm_component parent);
+	super.new(name, parent);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+
+virtual function void build_phase(uvm_phase phase);
+	super.build_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	uvm_config_db#(int)::get(this, "", "$3", $3);
+	uvm_config_db#(virtual $2)::get(this, "", "vif", vif);
+
+	$5 = new("$5", this);
+endfunction: build_phase
+
+virtual function void end_of_elaboration_phase(uvm_phase phase);
+	super.end_of_elaboration_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	if (!($3 inside {-1, [0:15]})) begin
+		\`uvm_fatal("CFGERR", $sformatf("$3 must be {-1, [0:15]}, not %0d!", $3));
+	end
+	if (vif == null) begin
+		\`uvm_fatal("CFGERR", "Interface for $1 not set");
+	end
+endfunction: end_of_elaboration_phase
+
+virtual task run_phase(uvm_phase phase);
+	$4 tr;
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	forever begin
+		tr = $4::type_id::create("tr", this);
+		tr.sa = this.$3;
+		get_packet(tr);
+		\`uvm_info("Got_Input_Packet", {"\n", tr.sprint()}, UVM_MEDIUM);
+		$5.write(tr);
+	end
+endtask: run_phase
+
+virtual task get_packet($4 tr);
+	logic [7:0] datum;
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	wait (vif.iMonClk.frame_n[$3] !==0);
+	@(vif.iMonClk iff (vif.iMonClk.frame_n[$3] === 0));
+
+	for (int i=0; i<4; i++) begin
+		if (!vif.iMonClk.frame_n[$3]) begin
+			tr.da[i] = vif.iMonClk.din[$3];
+		end else begin
+		\`uvm_fatal("Header_Error", $sformatf("@ Header cycle %0d, Frame not zero", i));
+		end
+		@(vif.iMonClk);
+	end
+
+	for (int i=0; i<5; i++) begin
+		if (!vif.iMonClk.frame_n[$3]) begin
+			if (vif.iMonClk.valid_n[$3] && vif.iMonClk.din[$3]) begin
+				@(vif.iMonClk);
+				continue;
+			end else begin
+				\`uvm_fatal("Header_Error", $sformatf("@%0d Valid or Din zero", i));
+			end
+		end else begin
+			\`uvm_fatal("Header_Error", "Frame not zero");
+		end
+	end
+
+	forever begin
+		for(int i=0; i<8; i=i) begin
+			if (!vif.iMonClk.valid_n[$3]) begin
+				if (vif.iMonClk.busy_n[$3]) begin
+					datum[i++] = vif.iMonClk.din[$3];
+					if (i == 8) begin
+						tr.payload.push_back(datum);
+					end
+				end else begin
+					\`uvm_fatal("Payload_Error", "Busy & Valid conflict");
+				end
+			end
+			if (vif.iMonClk.frame_n[$3]) begin
+				if (i == 8) begin
+					return;
+				end else begin
+					\`uvm_fatal("Payload_Error", "Not byte aligned");
+				end
+			end
+			@(vif.iMonClk);
+		end
+	end
+endtask: get_packet
+endclass: $1
+endsnippet
+
+#Instantiation
+snippet inst_agent "inst_agent"
+${1:host_agent}  ${2:h_agt};
+	//TODO:build phase
+	$2 = $1::type_id::create("$2", this);
+	uvm_config_db #(${3:ral_block_host_regmodel})::set(this, $2.get_name(), "regmodel", regmodel);
+	uvm_config_db #(uvm_object_wrapper)::set(this, {$2.get_name(), ".", "sqr.configure_phase"}, "default_sequence", ral_port_unlock_sequence::get_type());
+	$0
+	//TODO:connect phase
+	//regmodel.default_map.set_sequencer($2.sqr, adapter);
+	//$2.analysis_port.connect(hreg_predict.bus_in);
+endsnippet
+snippet inst_agent "inst_sb"
+${1:scoreboard}  ${2:sb};
+	//TODO:build phase
+	$2 = $1::type_id::create("$2", this);
+	//TODO:connect phase
+	${3:i_agt}.analysis_port.connect($2.before_export);
+	${4:o_agt}.analysis_port.connect($2.after_export);
+	$0
+endsnippet
+
+#Function
+snippet phase "uvm_phase"
+virtual function void ${1:build_phase}(uvm_phase phase);
+	super.$1(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: $1
+endsnippet
+snippet phases "list all uvm phases"
+//build connect end_of_elaboration run extract report final
+//reset configure main shutdown (pre_* post_*)
+endsnippet
+snippet new "constructor"
+function new (string name, uvm_component parent);
+	super.new(name, parent);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+endfunction: new
+endsnippet
+
+
+#UVM useful code
+snippet topology "show uvm topology (test.sv)"
+virtual function void final_phase(uvm_phase phase);
+	super.final_phase(phase);
+	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+
+	if (uvm_report_enabled(UVM_DEBUG, UVM_INFO, "TOPOLOGY")) begin
+		uvm_root::get().print_topology();
+	end
+
+	if (uvm_report_enabled(UVM_DEBUG, UVM_INFO, "FACTORY")) begin
+		uvm_factory::get().print();
+	end
+endfunction: final_phase
+endsnippet
+snippet phase_raise_objection "phase_raise_objection"
+phase.raise_objection(this);
+//env.sb.wait_for_done();
+phase.drop_objection(this);
+endsnippet
+
+#UVM example code
+#test_base extends uvm_test
+snippet test_set_vif "test.sv set vif"
+virtual router_io    router_vif;
+virtual reset_io     reset_vif;
+virtual host_io      host_vif;
+//virtual function void build_phase(uvm_phase phase);
+	uvm_resource_db#(virtual router_io)::read_by_type("router_vif", router_vif, this);
+	uvm_resource_db#(virtual reset_io)::read_by_type("reset_vif", reset_vif, this);
+
+	uvm_config_db#(virtual router_io)::set(this, "env.i_agt[*]", "vif", router_vif);
+	uvm_config_db#(virtual router_io)::set(this, "env.o_agt[*]", "vif", router_vif);
+	uvm_config_db#(virtual reset_io)::set(this, "env.r_agt", "vif", reset_vif);
+	uvm_resource_db#(virtual host_io)::read_by_type("host_vif", host_vif, this);
+	uvm_config_db#(virtual host_io)::set(this, "env.h_agt", "vif", host_vif);
+
+endsnippet
+snippet test_virtual_sequence "virtual sequence"
+top_reset_sequencer  top_reset_sqr;
+//TODO:build phase
+uvm_config_db #(uvm_object_wrapper)::set(this, "env.*.sqr.reset_phase", "default_sequence", null);
+uvm_config_db #(uvm_object_wrapper)::set(this, "top_reset_sqr.reset_phase", "default_sequence", top_reset_sequence::get_type());
+//TODO:connect phase
+foreach (env.i_agt[i]) begin
+	top_reset_sqr.pkt_sqr.push_back(env.i_agt[i].sqr);
+end
+top_reset_sqr.r_sqr = env.r_agt.sqr;
+top_reset_sqr.h_sqr = env.h_agt.sqr;
+endsnippet
+
+snippet set_type_ot "set_type_override_by_type"
+set_type_override_by_type(${1:scoreboard}::get_type(),${2:ms_scoreboard}::get_type());
+endsnippet
+snippet set_inst_ot "set_inst_override_by_type"
+set_inst_override_by_type("${1:env.agt}", "${1:agent}::get_type(),${2:new_agt}::get_type());
+endsnippet
+snippet uvm_confs "uvm_config_db set"
+uvm_config_db#(${1:int})::set(this, "*", "${2:id}", id);
+endsnippet
+snippet uvm_confg "uvm_config_db get"
+uvm_config_db#(${1:int})::get(this, "", "${2:id}", id);
+endsnippet
+snippet uvm_confss "uvm_config_db set sequence"
+uvm_config_db #(uvm_object_wrapper)::set(this, {${1:h_agt}.get_name(), ".", "${2:sqr.configure_phase}"}, "${3:default_sequence}", ${4:ral_port_unlock_sequence}::get_type());
+endsnippet
+snippet create "facotry create"
+${1:sb} = ${2:scoreboard}::type_id::create("$1", this);
+endsnippet
+snippet `uvm_compb "uvm_component_utils_begin"
+\`uvm_component_utils_begin(${1:iMonitor})
+	\`uvm_field_int(${2:port_id}, UVM_ALL_ON | UVM_DEC)
+\`uvm_component_utils_end
+endsnippet
+snippet `uvm_objub "uvm_object_utils_begin"
+\`uvm_object_utils_begin(${1:packet})
+	\`uvm_field_int(${2:sa}, UVM_ALL_ON | UVM_NOCOMPARE)
+	\`uvm_field_int(${3:da}, UVM_ALL_ON)
+	\`uvm_field_queue_int(${4:payload}, UVM_ALL_ON)
+\`uvm_object_utils_end
+endsnippet
+snippet constraint "constraint"
+constraint ${1:valid} {
+	${2:len > 0};
+	${3:payload}.size inside {[1:10]};
+}
+endsnippet
+
+snippet `uvm_info "uvm_info"
+\`uvm_info("${1:TRACE}", ${2:$sformatf("%m")}, ${3:UVM_HIGH});
+endsnippet
+snippet `uvm_warn "uvm_warning"
+\`uvm_warning("${1:TRACE}", ${2:$sformatf("%m")});
+endsnippet
+snippet `uvm_error "uvm_error"
+\`uvm_error("${1:TRACE}", ${2:$sformatf("%m")});
+endsnippet
+snippet `uvm_fatal "uvm_fatal"
+\`uvm_fatal("${1:TRACE}", ${2:$sformatf("%m")});
+endsnippet
+snippet UVM_v "list verbosity levels"
+//DEBUG FULL HIGH LOW MEDIUM NONE
+endsnippet
+
+
