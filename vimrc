@@ -7,13 +7,6 @@
 	filetype plugin indent on
 "}}}
 " Plugin setting"{{{
-	" load optional packages by default"{{{
-		let load_opt_packages=1
-		if load_opt_packages
-			:packadd YouCompleteMe
-			:packadd command-t
-		endif
-	"}}}
 	"Nerd tree"{{{
 		map <leader>nn :NERDTreeToggle<cr>
 		map <leader>nb :NERDTreeFromBookmark
@@ -66,6 +59,13 @@
 			let g:syntastic_auto_loc_list = 1
 			let g:syntastic_check_on_open = 1
 			let g:syntastic_check_on_wq = 0
+		endif
+	"}}}
+	" load optional packages by default"{{{
+		let load_opt_packages=1
+		if load_opt_packages
+			:packadd YouCompleteMe
+			:packadd command-t
 		endif
 	"}}}
 "}}}
@@ -251,4 +251,7 @@
 set tags=./tags;
 set tags+=~/.vim/tags/UVM
 "}}}
-"
+"Autoload for filetype"{{{
+autocmd Filetype verilog setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd Filetype systemverilog setlocal expandtab shiftwidth=2 softtabstop=2
+"}}}
