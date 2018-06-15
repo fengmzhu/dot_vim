@@ -7,6 +7,13 @@
 	filetype plugin indent on
 "}}}
 " Plugin setting"{{{
+	" load optional packages by default"{{{
+		let load_opt_packages=1
+		if load_opt_packages
+			:packadd YouCompleteMe
+			:packadd command-t
+		endif
+	"}}}
 	"Nerd tree"{{{
 		map <leader>nn :NERDTreeToggle<cr>
 		map <leader>nb :NERDTreeFromBookmark
@@ -49,7 +56,7 @@
 			let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
 		endif
 	"}}}
-	" YCM"{{{
+	" Syntastic"{{{
 		if !exists("g:syntastic_check_on_open")
 			set statusline+=%#warningmsg#
 			set statusline+=%{SyntasticStatuslineFlag()}
