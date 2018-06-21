@@ -1,0 +1,44 @@
+snippet prj "project"
+${1:Project_name}: @parallel(${2:true}) @autodone(${3:true})
+	$0
+endsnippet
+
+snippet prs "project simple"
+${1:Project_name}:
+	$0
+endsnippet
+
+snippet a "action"
+- ${1:action} @parallel(${2:true}) @autodone(${3:false})
+$0
+endsnippet
+
+snippet as "action simple"
+- ${1:action} @parallel(${2:true}) @autodone(${3:false})
+$0
+endsnippet
+
+snippet ad "action due"
+- ${1:action} @due(${2:tomorrow}) @parallel(${3:true}) @autodone(${4:false})
+$0
+endsnippet
+
+snippet af "action defer"
+- ${1:action} @defer(${2:1 week}) @parallel(${3:true}) @autodone(${4:false})
+$0
+endsnippet
+
+snippet adf "action due defer"
+- ${1:action} @defer(${2:1 week}) @due(${3:2 weeks}) @parallel(${4:true}) @autodone(${5:false})
+$0
+endsnippet
+
+snippet an "action nested"
+- ${1:action} @parallel(${2:true}) @autodone(${3:true})
+	- $0
+endsnippet
+
+snippet ans "action nested simple"
+- ${1:action}
+	- $0
+endsnippet
