@@ -1,6 +1,7 @@
 " Leader"{{{
 	let mapleader = "\<Space>"
 	let g:mapleader = "\<Space>"
+	let maplocalleader = ","
 "}}}
 " Essential"{{{
 	set nocompatible
@@ -47,6 +48,7 @@
 			let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 			let g:SuperTabDefaultCompletionType = '<C-n>'
 			let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
+			let g:ycm_seed_identifiers_with_syntax=1
 		endif
 	"}}}
 	" Syntastic"{{{
@@ -254,4 +256,19 @@ set tags+=~/.vim/tags/UVM
 "Autoload for filetype"{{{
 autocmd Filetype verilog setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd Filetype systemverilog setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd Filetype taskpaper map <localleader>cp  <esc>0xxf@hi:<esc>0
+autocmd Filetype taskpaper map <localleader>ca  <esc>f:x0i- <esc>0
+autocmd Filetype taskpaper map <localleader>t   <esc>cwtrue<esc>0
+autocmd Filetype taskpaper map <localleader>f   <esc>cwfalse<esc>0
+
+autocmd Filetype taskpaper map <localleader>af  <esc>$a @flagged<esc>0
+autocmd Filetype taskpaper map <localleader>adu <esc>$a @due(tomorrow)<esc>0
+autocmd Filetype taskpaper map <localleader>adf <esc>$a @defer(1 week)<esc>0
+
+autocmd Filetype taskpaper map <localleader>df  <esc>0/@flagged<cr>dW0
+autocmd Filetype taskpaper map <localleader>ddu <esc>0/@due<cr>dW0
+autocmd Filetype taskpaper map <localleader>ddf <esc>0/@defer<cr>dW0
+autocmd Filetype taskpaper map <localleader>dad <esc>0/@autodone<cr>dW0
+
+autocmd Filetype taskpaper map <localleader>da  <esc>0/@<cr>d$x0
 "}}}
