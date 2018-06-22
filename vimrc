@@ -222,7 +222,7 @@
 		map <leader>sl :set filetype=log<cr>
 	"}}}
 	"Customization"{{{
-		nnoremap <leader>d :r! date +"\%Y-\%m-\%d \%H:\%M:\%S"<ESC>0=j
+		nnoremap <leader>da  :r! date +"\%Y-\%m-\%d \%H:\%M:\%S"<ESC>0=j
 		nnoremap <leader>vt  :vs ~/vimwiki/tmp.wiki<CR>
 		nnoremap <leader>vw  :vs ~/vimwiki/index.wiki<CR>
 		nnoremap <leader>ev  :vs ~/.vimrc<CR>
@@ -256,6 +256,9 @@ set tags+=~/.vim/tags/UVM
 "Autoload for filetype"{{{
 autocmd Filetype verilog setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd Filetype systemverilog setlocal expandtab shiftwidth=2 softtabstop=2
+
+autocmd Filetype systemverilog map <localleader>d.  <esc>0/\.\/<cr>xx
+
 autocmd Filetype taskpaper map <localleader>cp  <esc>0xxf@hi:<esc>0
 autocmd Filetype taskpaper map <localleader>ca  <esc>f:x0i- <esc>0
 autocmd Filetype taskpaper map <localleader>t   <esc>cwtrue<esc>0

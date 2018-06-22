@@ -113,7 +113,37 @@ syn keyword uvm_keyword   uvm_resource_db
 syn keyword uvm_keyword   uvm_event
 syn keyword uvm_keyword   req
 
+syn keyword uvm_keyword   uvm_phase
 syn keyword uvm_keyword   uvm_cmdline_processor
+"}}}
+" UVM String"{{{
+syn keyword uvm_string   UVM_DEBUG
+syn keyword uvm_string   UVM_FULL
+syn keyword uvm_string   UVM_HIGH
+syn keyword uvm_string   UVM_MEDIUM
+syn keyword uvm_string   UVM_LOW
+syn keyword uvm_string   UVM_NONE
+syn keyword uvm_string   build_phase
+syn keyword uvm_string   connect_phase
+syn keyword uvm_string   end_of_elaboration_phase
+syn keyword uvm_string   start_of_simulation_phase
+syn keyword uvm_string   run_phase
+syn keyword uvm_string   extract_phase
+syn keyword uvm_string   report_phase
+syn keyword uvm_string   final_phase
+
+syn keyword uvm_string   reset_phase
+syn keyword uvm_string   configure_phase
+syn keyword uvm_string   main_phase
+syn keyword uvm_string   shutdown_phase
+syn keyword uvm_string   pre_reset_phase
+syn keyword uvm_string   pre_configure_phase
+syn keyword uvm_string   pre_main_phase
+syn keyword uvm_string   pre_shutdown_phase
+syn keyword uvm_string   post_reset_phase
+syn keyword uvm_string   post_configure_phase
+syn keyword uvm_string   post_main_phase
+syn keyword uvm_string   post_shutdown_phase
 "}}}
 " UVM Macro"{{{
 syn match uvm_macro   "`uvm_object_utils"
@@ -140,10 +170,6 @@ syn keyword uvm_function   seq_item_port
 syn keyword uvm_function   get_next_item
 syn keyword uvm_function   item_done
 syn keyword uvm_function   try_next_item
-syn keyword uvm_function   build_phase
-syn keyword uvm_function   connect_phase
-syn keyword uvm_function   run_phase
-syn keyword uvm_function   uvm_phase
 syn keyword uvm_function   raise_objection
 syn keyword uvm_function   drop_objection
 syn keyword uvm_function   run_test
@@ -242,6 +268,7 @@ if version >= 508 || !exists("did_systemverilog_syn_inits")
    HiLink uvm_keyword		 Statement
    HiLink uvm_function		 Label
    HiLink uvm_package		 Label
+   HiLink uvm_string		 Identifier
 
 
    delcommand HiLink
