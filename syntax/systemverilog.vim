@@ -123,6 +123,9 @@ syn keyword uvm_string   UVM_HIGH
 syn keyword uvm_string   UVM_MEDIUM
 syn keyword uvm_string   UVM_LOW
 syn keyword uvm_string   UVM_NONE
+
+syn keyword uvm_string   UVM_ACTIVE
+
 syn keyword uvm_string   build_phase
 syn keyword uvm_string   connect_phase
 syn keyword uvm_string   end_of_elaboration_phase

@@ -1,6 +1,7 @@
 # ~/.vim/UltiSnips/systemverilog.snippets
-priority 1
+priority 2
 extends verilog
+
 snippet clocking "clocking"
 clocking ${1:module_name} @(${2:posedge} ${3:clk});
 	$4
@@ -26,6 +27,10 @@ class ${1:class_name} extends ${2:parent};
 endclass: $1
 endsnippet
 
+snippet new "new call"
+${1:obj} = new("${2:$1}",this);$0
+endsnippet
+
 snippet program "program"
 program automatic ${1:test};
 	${2:import uvm_pkg::*};
@@ -42,12 +47,12 @@ snippet task "task"
 task ${1:task_name}($2);
 	\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
 	$3
-endtask : $1
+endtask: $1
 endsnippet
 
 snippet vfunc "virtual function"
 virtual function ${1:void} ${2:func_name}(${3:uvm_phase phase});
-	${3:${VISUAL}}
+	${4:${VISUAL}}
 endfunction : $2
 endsnippet
 
@@ -65,6 +70,33 @@ endsnippet
 
 snippet `inc "`include file"
 \`include "${1:filename}.sv"
+endsnippet
+
+snippet imp "import package"
+import ${1:uvm_pkg}::${2:*};
+endsnippet
+
+snippet rep "repeat"
+repeat (${1:10}) begin
+	$0
+end
+endsnippet
+
+snippet sprint "sformatf"
+$sformatf(${0:${VISUAL:"%0d"}}, $1)
+endsnippet
+
+#Visual select
+snippet if "if"
+if (${1}) begin
+	${0:${VISUAL}}
+end
+endsnippet
+
+snippet foreach "foreach"
+foreach (${1}) begin
+	${0:${VISUAL}}
+end
 endsnippet
 
 #UVM key template
@@ -85,6 +117,35 @@ class ${1:class_name} extends ${2:uvm_env};
 	function run_phase(uvm_phase phase);
 	endtask: run_phase
 endclass: $1
+endsnippet
+
+snippet uvobj "uvm object"
+class ${1:packet} extends ${2:uvm_sequence_item};
+	//rand bit [3:0] ${3:addr};
+	//rand bit[7:0] ${4:payload}[$];
+
+	`uvm_object_utils_begin($1)
+	//	`uvm_field_int($3, UVM_ALL_ON | UVM_NOCOMPARE)
+	//	`uvm_field_queue_int($4, UVM_ALL_ON)
+	`uvm_object_utils_end
+
+	//constraint valid {
+	//	$4.size inside {[1:10]};
+	//}
+
+	function new(string name = "$1");
+		super.new(name);
+		$0`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
+	endfunction: new
+
+endclass: $1
+endsnippet
+
+snippet constr "constraint"
+constraint ${1:valid} {
+	${2:len > 0};
+	${3:payload}.size inside {[1:10]};
+}
 endsnippet
 
 #Instantiation
@@ -117,17 +178,6 @@ virtual function void ${1:build_phase}(uvm_phase phase);
 endfunction: $1
 endsnippet
 
-snippet vfup "uvm_phase"
-virtual function void ${1:build_phase}(uvm_phase phase);
-	super.$1(phase);
-	$0\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
-endfunction: $1
-endsnippet
-
-snippet uvlp "list all uvm phases"
-//build connect end_of_elaboration run extract report final
-//reset configure main shutdown (pre_* post_*)
-endsnippet
 snippet uvnew "constructor"
 function new (string name, uvm_component parent);
 	super.new(name, parent);
@@ -136,23 +186,12 @@ endfunction: new
 endsnippet
 
 #UVM useful code
-snippet uvtopo "show uvm topology (test.sv)"
-virtual function void final_phase(uvm_phase phase);
-	super.final_phase(phase);
-	$0\`uvm_info("TRACE", $sformatf("%m"), UVM_HIGH);
-
-	if (uvm_report_enabled(UVM_DEBUG, UVM_INFO, "TOPOLOGY")) begin
-		uvm_root::get().print_topology();
-	end
-
-	if (uvm_report_enabled(UVM_DEBUG, UVM_INFO, "FACTORY")) begin
-		uvm_factory::get().print();
-	end
-endfunction: final_phase
+snippet uvm_root_pt "uvm_root::get().print_topology();"
+uvm_root::get().print_topology();
 endsnippet
 
-snippet uvpt "uvm_root::get().print_topology();"
-uvm_root::get().print_topology();
+snippet uvm_factory_pt "uvm_factory::get().print();"
+uvm_factory::get().print();
 endsnippet
 
 
@@ -169,25 +208,42 @@ set_type_override_by_type(${1:scoreboard}::get_type(),${2:ms_scoreboard}::get_ty
 endsnippet
 
 snippet uvsiot "set_inst_override_by_type"
-set_inst_override_by_type("${1:env.agt}", "${1:agent}::get_type(),${2:new_agt}::get_type());
+set_inst_override_by_type("${1:env.agt}", "${2:agent}::get_type(),${3:new_agt}::get_type());
 endsnippet
 
-snippet uvcdbset "uvm_config_db set"
-uvm_config_db#(${1:int})::set(this, "*", "${2:id}", id);
+snippet uvcset "uvm_config_db set"
+uvm_config_db#(${1:int})::set(this, ${2:"*"}, "${3:id}", ${4:id});
 endsnippet
 
-snippet uvcdbget "uvm_config_db get"
-uvm_config_db#(${1:int})::get(this, "", "${2:id}", id);
+snippet uvcsets "uvm_config_db set sequence"
+uvm_config_db #(${1:uvm_object_wrapper})::set(this, "${2:i_agt}.sqr.main_phase", "default_sequence", ${3:packet_sequence}::get_type());
 endsnippet
 
-snippet uvcdbgets "uvm_config_db set sequence"
+snippet uvcget "uvm_config_db get"
+uvm_config_db#(${1:int})::get(this, "$2", "${3:id}", ${4:id});
+endsnippet
+
+snippet uvcgets "uvm_config_db set sequence"
 uvm_config_db #(uvm_object_wrapper)::set(this, {${1:h_agt}.get_name(), ".", "${2:sqr.configure_phase}"}, "${3:default_sequence}", ${4:ral_port_unlock_sequence}::get_type());
 endsnippet
 
-snippet uvcreate "facotry create"
-${1:sb} = ${2:scoreboard}::type_id::create("$1", this);
+snippet create "facotry create"
+${1:sb} = ${2:scoreboard}::type_id::create($0"$1", this);
 endsnippet
 
+snippet connect "connect TLM ports (connect_phase)"
+${1:this}.${2:before_export}.connect(${3:comparator}.${4:$2});
+endsnippet
+
+snippet uvm_analysis_port "uvm_analysis_port"
+uvm_analysis_port #(${1:packet}) ${2:analysis_port};
+endsnippet
+
+snippet uvm_analysis_export "uvm_analysis_export"
+uvm_analysis_export #(${1:packet}) ${2:analysis_sport};
+endsnippet
+
+#macros
 snippet `uvm_compub "uvm_component_utils_begin"
 \`uvm_component_utils_begin(${1:iMonitor})
 	\`uvm_field_int(${2:port_id}, UVM_ALL_ON | UVM_DEC)
@@ -206,31 +262,44 @@ snippet `uvm_objub "uvm_object_utils_begin"
 \`uvm_object_utils_end
 endsnippet
 
-snippet constr "constraint"
-constraint ${1:valid} {
-	${2:len > 0};
-	${3:payload}.size inside {[1:10]};
-}
-endsnippet
-
-snippet `uvi "uvm_info"
+#uvm report macros
+snippet `uvm_i "uvm_info"
 \`uvm_info("${1:TRACE}", ${2:$sformatf("%m")}, ${3:UVM_HIGH});
 endsnippet
 
-snippet `uvw "uvm_warning"
+snippet `uvm_w "uvm_warning"
 \`uvm_warning("${1:TRACE}", ${2:$sformatf("%m")});
 endsnippet
 
-snippet `uve "uvm_error"
+snippet `uvm_e "uvm_error"
 \`uvm_error("${1:TRACE}", ${2:$sformatf("%m")});
 endsnippet
 
-snippet `uvf "uvm_fatal"
+snippet `uvm_f "uvm_fatal"
 \`uvm_fatal("${1:TRACE}", ${2:$sformatf("%m")});
 endsnippet
 
-snippet uvlv "list UVM verbosity levels"
-//(UVM_) DEBUG FULL HIGH LOW MEDIUM NONE
+#uvm do variants
+snippet `uvm_do "uvm_do"
+\`uvm_do(${1:req});
+endsnippet
+
+snippet `uvm_dow "uvm_do_with"
+\`uvm_do_with(${1:req}, {
+	$1.${2:addr} == ${3:'d3};
+	$1.${4:data} == ${5:'d4};
+});$0
+endsnippet
+
+snippet `uvm_doo "uvm_do_on"
+\`uvm_do_on(${1:req}, p_sequencer.${2:my_seqr});
+endsnippet
+
+snippet `uvm_doow "uvm_do_on_with"
+\`uvm_do_on_with(${1:req}, p_sequencer.${2:my_seqr}, {
+	$1.${3:addr} == ${4:'d3};
+	$1.${5:data} == ${6:'d4};
+});$0
 endsnippet
 
 #UVM visual select
@@ -239,3 +308,4 @@ if (uvm_report_enabled(${1:UVM_MEDIUM}, ${2:UVM_INFO}, "${3:TOPOLOGY}")) begin
 	${0:${VISUAL:#uvm_root::get().print_topology();}}
 end
 endsnippet
+

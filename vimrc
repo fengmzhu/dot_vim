@@ -251,7 +251,7 @@
 ""}}}
 "Ctags"{{{
 set tags=./tags;
-set tags+=~/.vim/tags/UVM
+set tags+=~/ctag_UVM/tags
 "}}}
 "Autoload for filetype"{{{
 autocmd Filetype verilog setlocal expandtab shiftwidth=2 softtabstop=2

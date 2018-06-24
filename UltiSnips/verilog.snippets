@@ -6,20 +6,10 @@ struct {
 endsnippet
 
 
-snippet program "program auto"
-program automatic ${1:program_name}();
-${1://body}
-endprogram
-endsnippet
-
 snippet initial "initial block"
 initial begin
 $1
 end
-endsnippet
-
-snippet new "new call"
-$1=new("$1",this);
 endsnippet
 
 snippet module "module"
@@ -44,13 +34,13 @@ endsnippet
 
 snippet for "for"
 for ($1; $2; $3) begin
-	$4
+	${4${VISUAL}}
 end
 endsnippet
 
 snippet while "while"
 while ($1) begin
-	${2://statement}
+	${2:${VISUAL}}
 end
 endsnippet
 
