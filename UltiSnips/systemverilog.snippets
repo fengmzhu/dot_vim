@@ -231,8 +231,12 @@ snippet create "facotry create"
 ${1:sb} = ${2:scoreboard}::type_id::create($0"$1", this);
 endsnippet
 
-snippet connect "connect TLM ports (connect_phase)"
+snippet connectb "connect TLM bypass (connect_phase)"
 ${1:this}.${2:before_export}.connect(${3:comparator}.${4:$2});
+endsnippet
+
+snippet connecte "connect in env (connect_phase)"
+${1:i_agt}.${2:analysis_port}.connect(${3:sb}.${4:before_export});
 endsnippet
 
 snippet uvm_analysis_port "uvm_analysis_port"
