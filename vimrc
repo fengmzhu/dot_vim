@@ -268,6 +268,27 @@
 "Ctags"{{{
 set tags=./tags;
 set tags+=~/ctag_UVM/tags
+"recursieve source tags and vimrc
+let local_vimrc = ".vimrc"
+let local_tags = "tags"
+let local_path = "/"
+let current_path = getcwd()
+" If the current path is a child of $HOME directory, start from $HOME
+if current_path =~ $HOME
+    let local_path = $HOME . local_path
+    let current_path = substitute(current_path, $HOME, '', '')
+endif
+let path_parts = split(current_path, "/")
+for path_part in path_parts
+    let local_path = local_path . path_part . "/"
+    if filereadable(local_path . local_vimrc)
+        exe ":so " . local_path . local_vimrc
+    endif
+    if filereadable(local_path . local_tags)
+        exe ":set tags+=" . local_path . local_tags
+    endif
+endfor
+unlet local_vimrc local_tags local_path current_path path_parts
 "}}}
 "Autoload for filetype"{{{
 autocmd Filetype verilog setlocal expandtab shiftwidth=2 softtabstop=2
