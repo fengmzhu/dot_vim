@@ -79,6 +79,10 @@
 		"map  <Leader>w <Plug>(easymotion-bd-w)
 		"nmap <Leader>w <Plug>(easymotion-overwin-w)
 	"}}}
+	" Mark"{{{
+		nmap <Leader>M <Plug>MarkToggle
+		nmap <Leader>N <Plug>MarkAllClear
+	"}}}
 	" load optional packages by default"{{{
 		let load_opt_packages=1
 		if load_opt_packages
@@ -106,6 +110,7 @@
 		set term=screen-256color
 		set list listchars=tab:› ,extends:>,precedes:<,eol:¬
 		set number
+		set relativenumber
 		set cursorline
 		set cmdheight=2
 		set nowrap
@@ -242,7 +247,8 @@
 		nnoremap <leader>vt  :vs ~/vimwiki/tmp.wiki<CR>
 		nnoremap <leader>vw  :vs ~/vimwiki/index.wiki<CR>
 		nnoremap <leader>ev  :vs ~/.vimrc<CR>
-		nnoremap <leader>m   :MRU<CR>
+		nnoremap <leader>es  :vsplit<cr>:UltiSnipsEdit<CR>
+		nnoremap <leader>mr  :MRU<CR>
 		nnoremap <leader>sv  :set syntax=systemverilog<CR>
 		nnoremap <leader>sp  :set syntax=snippets<CR>
 	"}}}
@@ -271,6 +277,7 @@ set tags+=~/ctag_UVM/tags
 "recursieve source tags and vimrc
 let local_vimrc = ".vimrc"
 let local_tags = "tags"
+let local_tags2 = ".tags"
 let local_path = "/"
 let current_path = getcwd()
 " If the current path is a child of $HOME directory, start from $HOME
@@ -286,6 +293,9 @@ for path_part in path_parts
     endif
     if filereadable(local_path . local_tags)
         exe ":set tags+=" . local_path . local_tags
+    endif
+    if filereadable(local_path . local_tags2)
+        exe ":set tags+=" . local_path . local_tags2
     endif
 endfor
 unlet local_vimrc local_tags local_path current_path path_parts

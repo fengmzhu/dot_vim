@@ -43,3 +43,9 @@
 [submodule "pack/feng/start/easymotion"]
 	path = pack/feng/start/easymotion
 	url = https://github.com/easymotion/vim-easymotion.git
+[submodule "pack/feng/start/vim-mark"]
+	path = pack/feng/start/vim-mark
+	url = https://github.com/inkarkat/vim-mark.git
+[submodule "pack/feng/start/vim-ingo-library"]
+	path = pack/feng/start/vim-ingo-library
+	url = https://github.com/inkarkat/vim-ingo-library.git
