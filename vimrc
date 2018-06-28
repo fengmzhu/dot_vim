@@ -251,6 +251,8 @@
 		nnoremap <leader>mr  :MRU<CR>
 		nnoremap <leader>sv  :set syntax=systemverilog<CR>
 		nnoremap <leader>sp  :set syntax=snippets<CR>
+		nnoremap <silent><Leader>] <C-w><C-]>
+		nnoremap <silent><Leader>[ :vs<CR><C-]>
 	"}}}
 "}}}
 " Helper Functions "{{{
@@ -288,9 +290,9 @@ endif
 let path_parts = split(current_path, "/")
 for path_part in path_parts
     let local_path = local_path . path_part . "/"
-    if filereadable(local_path . local_vimrc)
-        exe ":so " . local_path . local_vimrc
-    endif
+    "if filereadable(local_path . local_vimrc)
+    "    exe ":so " . local_path . local_vimrc
+    "endif
     if filereadable(local_path . local_tags)
         exe ":set tags+=" . local_path . local_tags
     endif
