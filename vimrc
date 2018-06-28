@@ -147,6 +147,9 @@
 		set tm=500
 		set so=6                " Set 7 lines to the cursor - when moving vertically using j/k
 		map 0 ^
+		if exists("&termwinkey")
+			set termwinkey=<C-b>
+		endif
 	"}}}
 	" Status line"{{{
 		set laststatus=2 " Always show the status line
@@ -251,8 +254,11 @@
 		nnoremap <leader>mr  :MRU<CR>
 		nnoremap <leader>sv  :set syntax=systemverilog<CR>
 		nnoremap <leader>sp  :set syntax=snippets<CR>
+		nnoremap <leader>xn  :botright term<CR>
+		nnoremap <leader>xm  :botright vert term<CR>
 		nnoremap <silent><Leader>] <C-w><C-]>
 		nnoremap <silent><Leader>[ :vs<CR><C-]>
+		vnoremap <leader>rm  :s/\r/\r/g<CR>
 	"}}}
 "}}}
 " Helper Functions "{{{
