@@ -1,0 +1,45 @@
+# ~/.vim/UltiSnips/perl.snippets
+priority 1
+
+snippet forek "for each hash key"
+foreach my $${1:key} (keys %${2:$hash}) {
+	${3:#body...}
+}
+endsnippet
+
+snippet usew "use warnings"
+use warnings;
+use strict;
+endsnippet
+
+snippet used "use data dumper"
+use Data::Dumper;
+endsnippet
+
+snippet openr "read file"
+open (my ${1:$fh}, '<', ${2:$file}) or die "Could not open file $2 $!";
+while (my $${3:line} = <$1>) {
+	${4:#body...}
+}
+close ($1);
+endsnippet
+
+snippet openw "write file"
+open (my ${1:$ofh}, '>', ${2:$outfile}) or die "Could not open file $2 $!";
+${3:#print $1 "output"};
+close ($1);
+endsnippet
+
+snippet sub ""
+sub ${1:function_name} {#{{{
+	my (${2:$var}) = @_;
+	$0
+}#}}}
+endsnippet
+
+snippet times "timestamp"
+my @${1:now} = localtime();
+my ${2:$timeStamp} = sprintf("%04d%02d%02d_%02d%02d%02d",
+	$$1[5]+1900, $$1[4]+1, $$1[3],
+	$$1[2],      $$1[1],   $$1[0]);
+endsnippet

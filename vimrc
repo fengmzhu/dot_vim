@@ -250,7 +250,7 @@
 		nnoremap <leader>vt  :vs ~/vimwiki/tmp.wiki<CR>
 		nnoremap <leader>vw  :vs ~/vimwiki/index.wiki<CR>
 		nnoremap <leader>ev  :vs ~/.vimrc<CR>
-		nnoremap <leader>es  :vsplit<cr>:UltiSnipsEdit<CR>
+		nnoremap <leader>eu  :vsplit<cr>:UltiSnipsEdit<CR>
 		nnoremap <leader>mr  :MRU<CR>
 		nnoremap <leader>sv  :set syntax=systemverilog<CR>
 		nnoremap <leader>sp  :set syntax=snippets<CR>
