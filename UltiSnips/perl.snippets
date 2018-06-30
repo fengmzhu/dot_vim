@@ -1,9 +1,55 @@
 # ~/.vim/UltiSnips/perl.snippets
 priority 1
 
+snippet printd "print Dumper"
+print Dumper $1;
+endsnippet
+
+snippet href "hash ref"
+my $${1:hashRef} = {
+	"${2:hello}" => ${3:"world"},
+};
+endsnippet
+
+snippet if
+if (${1}) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet wh
+while (${1}) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet while
+while (${1}) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet cfor
+for (my $${2:var} = 0; $$2 < ${1:count}; $$2${3:++}) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet for
+for (my $${2:var} = 0; $$2 < ${1:count}; $$2${3:++}) {
+	${0:${VISUAL}}
+}
+endsnippet
+
+snippet fore
+foreach my $${1:x} (@${2:array}) {
+	${0:${VISUAL}}
+}
+endsnippet
+
 snippet forek "for each hash key"
 foreach my $${1:key} (keys %${2:$hash}) {
-	${3:#body...}
+	${0:${VISUAL}}
 }
 endsnippet
 
@@ -16,8 +62,12 @@ snippet used "use data dumper"
 use Data::Dumper;
 endsnippet
 
+snippet usef "use function from package"
+use ${1:VPERL::Util} qw(${2:isNumeric});
+endsnippet
+
 snippet openr "read file"
-open (my ${1:$fh}, '<', ${2:$file}) or die "Could not open file $2 $!";
+open (my ${1:$fh}, '<', ${2:$file}) or die "Could not open file".'$2'."$!";
 while (my $${3:line} = <$1>) {
 	${4:#body...}
 }
@@ -25,7 +75,7 @@ close ($1);
 endsnippet
 
 snippet openw "write file"
-open (my ${1:$ofh}, '>', ${2:$outfile}) or die "Could not open file $2 $!";
+open (my ${1:$ofh}, '>', ${2:$outfile}) or die "Could not open file".'$2'."$!";
 ${3:#print $1 "output"};
 close ($1);
 endsnippet
@@ -43,3 +93,89 @@ my ${2:$timeStamp} = sprintf("%04d%02d%02d_%02d%02d%02d",
 	$$1[5]+1900, $$1[4]+1, $$1[3],
 	$$1[2],      $$1[1],   $$1[0]);
 endsnippet
+
+snippet fork "fork child"
+my ${1:$pid} = fork();
+die if not defined $1;
+if (not $1) {
+	${3:#child process}
+	exit 0;
+} else {
+	${4:#parent process}
+}
+endsnippet
+
+snippet forkw "fork wait for child"
+my ${1:$pid} = fork();
+die if not defined $1;
+my @${2:childrenPids};
+if (not $1) {
+	${3:#child process}
+	exit 0;
+} else {
+	push @$2, $1;
+	${4:#parent process}
+}
+foreach my ${3:$child} (@$2) { #wait for all child to finish
+	waitpid($3, 0);
+}
+endsnippet
+
+snippet class "class"
+package ${1:VPERL::Port};
+
+use warnings;
+use strict;
+${3:use Data::Dumper;}
+
+sub new {#{{{
+	my ($class) = @_;
+	my $self = {};
+
+	$0
+
+	bless $self, $class;
+	return $self;
+}#}}}
+
+1;
+endsnippet
+
+snippet classe "inherited class"
+package ${1:VPERL::Port};
+use parent ("${2:VPERL::Wire}");
+
+use warnings;
+use strict;
+${3:use Data::Dumper;}
+
+sub new {#{{{
+	my ($class) = @_;
+	my $self = {};
+	$self = $class->SUPER::new();
+
+	$0
+
+	bless $self, $class;
+	return $self;
+}#}}}
+
+1;
+endsnippet
+
+snippet hstore "store hash to file"
+use Data::Dumper;$0
+$Data::Dumper::Purity = 1;
+
+open (my ${1:$ofh}, '>', ${2:$outfile}) or die "Could not open file".'$2'."$!";
+print $1 Data::Dumper->Dump([$${3:hashRef}], ['$3']);
+close ($1);
+endsnippet
+
+snippet hload "load hash from file"
+open ${1:$fh}, ${2:$hashFile};
+undef $/;
+${3:$hashRef} = eval <$1>;
+close ($1);
+endsnippet
+
