@@ -3,6 +3,9 @@ priority 1
 
 #print
 snippet p "print"
+print ${1:${VISUAL}};
+endsnippet
+snippet pb "print with brackets"
 print "${1:${VISUAL}}";
 endsnippet
 snippet pn "print with new line"
@@ -227,7 +230,7 @@ sub procArgv {#{{{
 	exit usage(1) unless @argvCopy;
 	while (@argvCopy) {
 		my $arg = shift @argvCopy;
-		if ($arg =~ /^-?-h/) {
+		if ($arg =~ /^--?h/) {
 			exit usage(0);
 		} elsif ($arg =~ /^([-+])-?(\w+)/) {
 			my $minPlus = \$1;

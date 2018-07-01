@@ -36,32 +36,20 @@
 		let g:airline#extensions#tabline#enabled = 1
 	"}}}
 	" UtilSnips"{{{
-		if !exists("g:UltiSnipsJumpForwardTrigger")
-			let g:UltiSnipsExpandTrigger ="<tab>"
-			let g:UltiSnipsJumpForwardTrigger ="<tab>"
-			let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-		endif
-	"}}}
-	" YCM"{{{
-		if !exists("g:ycm_key_list_select_completion")
-			let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-			let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-			let g:SuperTabDefaultCompletionType = '<C-n>'
-			let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
-			let g:ycm_seed_identifiers_with_syntax=1
-		endif
+		let g:UltiSnipsExpandTrigger ="<tab>"
+		let g:UltiSnipsJumpForwardTrigger ="<tab>"
+		let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 	"}}}
 	" Syntastic"{{{
-		if !exists("g:syntastic_check_on_open")
-			set statusline+=%#warningmsg#
-			set statusline+=%{SyntasticStatuslineFlag()}
-			set statusline+=%*
+		set statusline+=%#warningmsg#
+		set statusline+=%{SyntasticStatuslineFlag()}
+		set statusline+=%*
 
-			let g:syntastic_always_populate_loc_list = 1
-			let g:syntastic_auto_loc_list = 1
-			let g:syntastic_check_on_open = 1
-			let g:syntastic_check_on_wq = 0
-		endif
+		let g:syntastic_always_populate_loc_list = 1
+		let g:syntastic_auto_loc_list = 1
+		let g:syntastic_check_on_open = 1
+		"let g:syntastic_python_python_exec = '/usr/local/bin/python2.7'
+		let g:syntastic_python_python_exec = '/usr/local/bin/python3'
 	"}}}
 	" EasyMotion"{{{
 		" <Leader>f{char} to move to {char}
@@ -83,11 +71,23 @@
 		nmap <Leader>M <Plug>MarkToggle
 		nmap <Leader>N <Plug>MarkAllClear
 	"}}}
+
+	"Optional packages
 	" load optional packages by default"{{{
 		let load_opt_packages=1
 		if load_opt_packages
 			:packadd YouCompleteMe
 			:packadd command-t
+		endif
+	"}}}
+	" YCM"{{{
+		if exists("g:ycm_key_list_select_completion")
+			let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+			let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+			let g:SuperTabDefaultCompletionType = '<C-n>'
+			let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
+			let g:ycm_seed_identifiers_with_syntax=1
+			let g:ycm_autoclose_preview_window_after_insertion=1
 		endif
 	"}}}
 "}}}
@@ -309,6 +309,7 @@ endfor
 unlet local_vimrc local_tags local_path current_path path_parts
 "}}}
 "Autoload for filetype"{{{
+autocmd Filetype python setlocal expandtab shiftwidth=4 softtabstop=4
 autocmd Filetype verilog setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd Filetype systemverilog setlocal expandtab shiftwidth=2 softtabstop=2
 
