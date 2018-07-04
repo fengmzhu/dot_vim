@@ -52,8 +52,7 @@ import random
 import sys
 import os
 
-
-#snippets
+${1:#snippets}
 endsnippet
 
 #file handling
@@ -118,4 +117,19 @@ for ${3:line} in ${4:lines}:
 endsnippet
 snippet res "regex search"
 re.search(r'${1:regex}', ${2:str} ${3:, flags=0})
+endsnippet
+
+#Leetcode
+snippet class
+class ${1:ClassName}(${2:object}):
+	def __init__(self, ${4:arg}):
+		${5:super($1, self).__init__()}
+		self.$4 = $4
+		${0}
+endsnippet
+snippet enu "enumerate()"
+enumerate(${1:list}})
+endsnippet
+snippet rg "range()"
+range(${1:low}, ${2:len(${3:list})})
 endsnippet

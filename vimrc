@@ -171,6 +171,12 @@
 	"}}}
 	" Autocomplete"{{{
 		imap ;; <c-x><c-p>
+		imap jk <esc>
+		imap (; ()<esc>i
+		imap [; []<esc>i
+		imap {; {}<esc>i
+		imap '; ''<esc>i
+		imap "; ""<esc>i
 	"}}}
 	" Pane resizing"{{{
 		nnoremap <leader>j :resize +5<cr>
@@ -249,7 +255,7 @@
 		nnoremap <leader>da  :r! date +"\%Y-\%m-\%d \%H:\%M:\%S"<ESC>0=j
 		nnoremap <leader>vt  :vs ~/vimwiki/tmp.wiki<CR>
 		nnoremap <leader>vw  :vs ~/vimwiki/index.wiki<CR>
-		nnoremap <leader>ev  :vs ~/.vimrc<CR>
+		nnoremap <leader>ev  :vs ~/.vim/vimrc<CR>
 		nnoremap <leader>eu  :vsplit<cr>:UltiSnipsEdit<CR>
 		nnoremap <leader>mr  :MRU<CR>
 		nnoremap <leader>sv  :set syntax=systemverilog<CR>
