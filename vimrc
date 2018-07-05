@@ -266,6 +266,12 @@
 		nnoremap <silent><Leader>[ :vs<CR><C-]>
 		vnoremap <leader>rm  :s/\r/\r/g<CR>
 	"}}}
+	" Navigating with guides{{{
+		inoremap <Space><Tab> <Esc>/<++><Enter>"_c4l
+		vnoremap <Space><Tab> <Esc>/<++><Enter>"_c4l
+		map <Space><Tab> <Esc>/<++><Enter>"_c4l
+		inoremap ;gui <++>
+	"}}}
 "}}}
 " Helper Functions "{{{
 	" Delete trailing white space on save "{{{
@@ -315,12 +321,17 @@ endfor
 unlet local_vimrc local_tags local_path current_path path_parts
 "}}}
 "Autoload for filetype"{{{
+"python{{{
 autocmd Filetype python setlocal expandtab shiftwidth=4 softtabstop=4
+"}}}
+"verilog{{{
 autocmd Filetype verilog setlocal expandtab shiftwidth=2 softtabstop=2
+"}}}
+"systemverilog{{{
 autocmd Filetype systemverilog setlocal expandtab shiftwidth=2 softtabstop=2
-
 autocmd Filetype systemverilog map <localleader>d.  <esc>0/\.\/<cr>xx
-
+"}}}
+"taskpaper{{{
 autocmd Filetype taskpaper map <localleader>cp  <esc>0xxf@hi:<esc>0
 autocmd Filetype taskpaper map <localleader>ca  <esc>f:x0i- <esc>0
 autocmd Filetype taskpaper map <localleader>t   <esc>cwtrue<esc>0
@@ -336,4 +347,58 @@ autocmd Filetype taskpaper map <localleader>ddf <esc>0/@defer<cr>dW0
 autocmd Filetype taskpaper map <localleader>dad <esc>0/@autodone<cr>dW0
 
 autocmd Filetype taskpaper map <localleader>da  <esc>0/@<cr>d$x0
+"}}}
+"LATEX{{{
+"LATEX Logical symbols
+	autocmd BufRead,BufNewFile *.tex set filetype=tex
+	autocmd FileType tex inoremap ;m $$<Space><++><Esc>2T$i
+	autocmd FileType tex inoremap ;M $$$$<Enter><Enter><++><Esc>2k$hi
+	autocmd FileType tex inoremap ;neg {\neg}
+	autocmd FileType tex inoremap ;V {\vee}
+	autocmd FileType tex inoremap ;or {\vee}
+	autocmd FileType tex inoremap ;L {\wedge}
+	autocmd FileType tex inoremap ;and {\wedge}
+	autocmd FileType tex inoremap ;ra {\rightarrow}
+	autocmd FileType tex inoremap ;la {\leftarrow}
+	autocmd FileType tex inoremap ;lra {\leftrightarrow}
+	autocmd FileType tex inoremap ;fa {\forall}
+	autocmd FileType tex inoremap ;ex {\exists}
+	autocmd FileType tex inoremap ;dia	{\Diamond}
+	autocmd FileType tex inoremap ;box	{\Box}
+	autocmd FileType tex inoremap ;gt	{\textgreater}
+	autocmd FileType tex inoremap ;lt	{\textless}
+"LaTeX Linguistics Shortcuts
+	autocmd Filetype tex inoremap ;nom {\textsc{nom}}
+	autocmd FileType tex inoremap ;acc {\textsc{acc}}
+	autocmd FileType tex inoremap ;dat {\textsc{dat}}
+	autocmd FileType tex inoremap ;gen {\textsc{gen}}
+	autocmd FileType tex inoremap ;abl {\textsc{abl}}
+	autocmd FileType tex inoremap ;voc {\textsc{voc}}
+	autocmd FileType tex inoremap ;loc {\textsc{loc}}
+	autocmd Filetype tex inoremap ;inst {\textsc{inst}}
+	autocmd FileType tex inoremap ;tipa \textipa{}<Space><++><Esc>T{i
+".bib"{{{
+	autocmd FileType bib inoremap ;a @article{<Enter><tab>author<Space>=<Space>"<++>",<Enter><tab>year<Space>=<Space>"<++>",<Enter><tab>title<Space>=<Space>"<++>",<Enter><tab>journal<Space>=<Space>"<++>",<Enter><tab>volume<Space>=<Space>"<++>",<Enter><tab>pages<Space>=<Space>"<++>",<Enter><tab>}<Enter><++><Esc>8kA,<Esc>i
+	autocmd FileType bib inoremap ;b @book{<Enter><tab>author<Space>=<Space>"<++>",<Enter><tab>year<Space>=<Space>"<++>",<Enter><tab>title<Space>=<Space>"<++>",<Enter><tab>publisher<Space>=<Space>"<++>",<Enter><tab>}<Enter><++><Esc>6kA,<Esc>i
+	autocmd FileType bib inoremap ;c @incollection{<Enter><tab>author<Space>=<Space>"<++>",<Enter><tab>title<Space>=<Space>"<++>",<Enter><tab>booktitle<Space>=<Space>"<++>",<Enter><tab>editor<Space>=<Space>"<++>",<Enter><tab>year<Space>=<Space>"<++>",<Enter><tab>publisher<Space>=<Space>"<++>",<Enter><tab>}<Enter><++><Esc>8kA,<Esc>i
+"}}}
+"}}}
+"MARKDOWN{{{
+	autocmd Filetype markdown,rmd map <leader>w yiWi[<esc>Ea](<esc>pa)
+	autocmd Filetype markdown,rmd inoremap ;n ---<Enter><Enter>
+	autocmd Filetype markdown,rmd inoremap ;b ****<++><Esc>F*hi
+	autocmd Filetype markdown,rmd inoremap ;s ~~~~<++><Esc>F~hi
+	autocmd Filetype markdown,rmd inoremap ;e **<++><Esc>F*i
+	autocmd Filetype markdown,rmd inoremap ;h ====<Space><++><Esc>F=hi
+	autocmd Filetype markdown,rmd inoremap ;i ![](<++>)<++><Esc>F[a
+	autocmd Filetype markdown,rmd inoremap ;a [](<++>)<++><Esc>F[a
+	autocmd Filetype markdown,rmd inoremap ;1 #<Space><Enter><++><Esc>kA
+	autocmd Filetype markdown,rmd inoremap ;2 ##<Space><Enter><++><Esc>kA
+	autocmd Filetype markdown,rmd inoremap ;3 ###<Space><Enter><++><Esc>kA
+	autocmd Filetype markdown,rmd inoremap ;l --------<Enter>
+	autocmd Filetype markdown map <F5> :!pandoc<space><C-r>%<space>--pdf-engine=xelatex<space>-o<space><C-r>%.pdf<Enter><Enter>
+	autocmd Filetype rmd map <F5> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
+	autocmd Filetype rmd inoremap ;r ```{r}<CR>```<CR><CR><esc>2kO
+	autocmd Filetype rmd inoremap ;p ```{python}<CR>```<CR><CR><esc>2kO
+"}}}
 "}}}
