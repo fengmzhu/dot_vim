@@ -267,9 +267,9 @@
 		vnoremap <leader>rm  :s/\r/\r/g<CR>
 	"}}}
 	" Navigating with guides{{{
-		inoremap <Space><Tab> <Esc>/<++><Enter>"_c4l
-		vnoremap <Space><Tab> <Esc>/<++><Enter>"_c4l
-		map <Space><Tab> <Esc>/<++><Enter>"_c4l
+		inoremap ;' <Esc>/<++><Enter>"_c4l
+		vnoremap ;' <Esc>/<++><Enter>"_c4l
+		map ;' <Esc>/<++><Enter>"_c4l
 		inoremap ;gui <++>
 	"}}}
 "}}}
@@ -429,7 +429,7 @@ autocmd Filetype taskpaper map <localleader>da  <esc>0/@<cr>d$x0
 "}}}
 "}}}
 "MARKDOWN{{{
-	autocmd Filetype markdown,rmd map <leader>w yiWi[<esc>Ea](<esc>pa)
+	"autocmd Filetype markdown,rmd map <leader>w yiWi[<esc>Ea](<esc>pa)
 	autocmd Filetype markdown,rmd inoremap ;n ---<Enter><Enter>
 	autocmd Filetype markdown,rmd inoremap ;b ****<++><Esc>F*hi
 	autocmd Filetype markdown,rmd inoremap ;s ~~~~<++><Esc>F~hi
